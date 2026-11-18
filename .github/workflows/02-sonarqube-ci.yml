@@ -1,0 +1,63 @@
+
+name: 02 - SonarQube Analysis
+
+on:
+  workflow_run:
+    workflows:
+      - "01 - Java Build and Unit Tests"
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  sonar-analysis:
+    name: SonarQube Code Quality Analysis
+    runs-on: ubuntu-latest
+
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      # 1. Checkout the exact commit from Pipeline 1
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      # 2. Install Java 17
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      # 3. Run Maven tests and SonarQube analysis
+      - name: Run Tests and SonarQube Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          mvn -B clean verify \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=java-cicd-project \
+            -Dsonar.host.url="$SONAR_HOST_URL" \
+            -Dsonar.token="$SONAR_TOKEN" \
+            -Dsonar.qualitygate.wait=true
+
+      # 4. Upload JAR for Pipeline 3
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-app-jar
+          path: target/java-cicd-app-1.0.0.jar
+          if-no-files-found: error
+          retention-days: 7
+
+      # 5. Success message
+      - name: SonarQube Success
+        run: echo "Tests and SonarQube analysis completed successfully!"
