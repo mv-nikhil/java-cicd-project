@@ -4,7 +4,7 @@ name: 03 - Deployment to AWS EC2
 on:
   workflow_run:
     workflows:
-      - "sonarqube-ci.yml"
+      - " 02 - SonarQube Analysis"
     types:
       - completed
     branches:
