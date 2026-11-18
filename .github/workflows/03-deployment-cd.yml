@@ -75,13 +75,13 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
 
-      # 7. Copy JAR to EC2
+      # 7. Copy JAR version 1.0.1 to EC2
       - name: Copy JAR to EC2
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
         run: |
-          scp target/java-cicd-app-1.0.0.jar \
+          scp target/java-cicd-app-1.0.1.jar \
             "$EC2_USERNAME@$EC2_HOST:/tmp/app.jar"
 
       # 8. Deploy application and restart service
@@ -119,5 +119,5 @@ jobs:
       # 9. Deployment success
       - name: Deployment Success
         run: |
-          echo "Maven package published successfully!"
+          echo "Maven package version 1.0.1 published successfully!"
           echo "Java application deployed successfully!"
