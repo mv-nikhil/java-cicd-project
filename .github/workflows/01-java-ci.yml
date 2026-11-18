@@ -1,0 +1,72 @@
+
+name: 01 - Java Build and Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build, Verify and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Download source code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Verify project structure
+      - name: Verify Project Structure
+        run: |
+          echo "Checking project files..."
+
+          test -f pom.xml
+          test -f src/main/java/com/example/App.java
+          test -f src/test/java/com/example/AppTest.java
+
+          echo "Project structure verified successfully!"
+
+      # Step 3: Set up Java 17
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      # Step 4: Compile application
+      - name: Maven Compile
+        run: mvn clean compile
+
+      # Step 5: Run unit tests
+      - name: Run Unit Tests
+        run: mvn test
+
+      # Step 6: Package application
+      - name: Maven Package
+        run: mvn package
+
+      # Step 7: Upload executable JAR
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-app-jar
+          path: target/java-cicd-app-1.0.0.jar
+          if-no-files-found: error
+          retention-days: 7
+
+      # Step 8: Build success message
+      - name: Build Success
+        run: echo "Java application built and tested successfully!"
