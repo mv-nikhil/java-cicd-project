@@ -5,12 +5,10 @@ on:
   push:
     branches:
       - main
-      
 
   pull_request:
     branches:
       - main
-      
 
   workflow_dispatch:
 
@@ -63,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app-jar
-          path: target/java-cicd-app-1.0.0.jar
+          path: target/java-cicd-app-1.0.1.jar
           if-no-files-found: error
           retention-days: 7
 
