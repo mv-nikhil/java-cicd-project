@@ -9,6 +9,15 @@
     <groupId>com.example</groupId>
     <artifactId>java-cicd-app</artifactId>
     <version>1.0.0</version>
+         
+<distributionManagement>
+    <repository>
+        <id>github</id>
+        <name>GitHub Packages</name>
+        <url>https://maven.pkg.github.com/mv-nikhil/java-cicd-project</url>
+    </repository>
+</distributionManagement>
+
 
     <name>Java CI CD Calculator App</name>
 
