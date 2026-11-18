@@ -4,7 +4,7 @@ name: 02 - SonarQube Analysis
 on:
   workflow_run:
     workflows:
-      - "01 - Java Build and Unit Tests"
+      - "01-java-ci.yml"
     types:
       - completed
     branches:
